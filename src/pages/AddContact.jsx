@@ -1,6 +1,33 @@
 // Import necessary components from react-router-dom and other parts of the application.
 import { Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
+import { useState } from "react";
+
+const AddContactForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('')
+  const [store, dispatch] = useGlobalReducer()
+
+  const handleClick = () => {
+    dispatch({
+      type: 'add_contact',
+      payload : {name, email, phone, address}
+    })
+  }
+
+  return(
+    <>
+    <input type="text" value={name} onChange={(e) => {setName(e.target.value)}}/>
+    <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+    <input type="text" value={phone} onChange={(e) => {setPhone(e.target.value)}}/>
+    <input type="text" value={address} onChange={(e) => {setAddress(e.target.value)}}/>
+    <button onClick={handleClick}>Add Contact</button>
+    </>
+  )
+
+}
 
 export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.

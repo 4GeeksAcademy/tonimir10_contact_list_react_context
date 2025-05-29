@@ -12,7 +12,8 @@ export const initialStore=()=>{
         title: "Do my homework",
         background: null,
       }
-    ]
+    ],
+    contactList:[]
   }
 }
 
@@ -26,7 +27,19 @@ export default function storeReducer(store, action = {}) {
         ...store,
         todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
       };
+
+      case 'add_contact' :
+      const newContact = action.payload
+      const contactList = [...store.contactList, newContact];
+      return{
+        ...store,
+        contactList
+      };
+
     default:
       throw Error('Unknown action.');
+
+    
+        
   }    
 }
