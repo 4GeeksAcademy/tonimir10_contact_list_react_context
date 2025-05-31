@@ -35,6 +35,28 @@ export const ContactList = () => {
 },
  [])
 
+ const { dispatch } = useGlobalReducer(); // ya está disponible por tu hook
+
+const handleDelete = async (id) => {
+  try {
+    const resp = await fetch(`https://playground.4geeks.com/contact/agendas/tonimir10/contacts/${id}`, {
+      method: "DELETE"
+    });
+
+    if (!resp.ok) throw new Error("Error deleting contact from API");
+
+    setContactList(prev => prev.filter(contact => contact.id !== id));
+
+    dispatch({
+      type: "delete_contact",
+      payload: id
+    });
+
+  } catch (error) {
+    console.error("Failed to delete contact:", error);
+  }
+};
+
 	return (
 		<>
 		<div className="container mt-4">
@@ -53,7 +75,7 @@ export const ContactList = () => {
                 <p className="mb-0">📧 {contact.email}</p>
               </div>
             </div>
-			<button>🗑️</button>
+			<button onClick={() => handleDelete(contact.id)}>🗑️</button>
 			<button>🖋️</button>
             <div>
               

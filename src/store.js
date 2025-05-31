@@ -36,6 +36,12 @@ export default function storeReducer(store, action = {}) {
         contactList
       };
 
+      case 'delete_contact':
+  return {
+    ...store,
+    contactList: store.contactList.filter(contact => contact.id !== action.payload)
+  };
+
     default:
       throw Error('Unknown action.');
 
