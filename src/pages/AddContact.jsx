@@ -1,33 +1,86 @@
 // Import necessary components from react-router-dom and other parts of the application.
-import { Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
-const AddContactForm = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('')
-  const [store, dispatch] = useGlobalReducer()
+export const AddContactForm = () => {
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
 
-  const handleClick = () => {
-    dispatch({
-      type: 'add_contact',
-      payload : {name, email, phone, address}
-    })
-  }
+  const navigate = useNavigate();
+  const { dispatch } = useGlobalReducer();
 
-  return(
-    <>
-    <input type="text" value={name} onChange={(e) => {setName(e.target.value)}}/>
-    <input type="text" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
-    <input type="text" value={phone} onChange={(e) => {setPhone(e.target.value)}}/>
-    <input type="text" value={address} onChange={(e) => {setAddress(e.target.value)}}/>
-    <button onClick={handleClick}>Add Contact</button>
-    </>
-  )
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const resp = await fetch("https://playground.4geeks.com/contact/agendas/tonimir10/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.full_name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+        }),
+      });
+
+      if (!resp.ok) throw new Error("Failed to save contact to API");
+
+      const newContact = await resp.json();
+
+      // Guardar en el estado global
+      dispatch({
+        type: "add_contact",
+        payload: newContact,
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error saving contact:", error);
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2 className="text-center mb-4">Add a new contact</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group mb-3">
+          <label>Full Name</label>
+          <input type="text" name="full_name" className="form-control" onChange={handleChange} required />
+        </div>
+        <div className="form-group mb-3">
+          <label>Email</label>
+          <input type="text" name="email" className="form-control" onChange={handleChange} required />
+        </div>
+        <div className="form-group mb-3">
+          <label>Phone</label>
+          <input type="text" name="phone" className="form-control" onChange={handleChange} required />
+        </div>
+        <div className="form-group mb-4">
+          <label>Address</label>
+          <input type="text" name="address" className="form-control" onChange={handleChange} required />
+        </div>
+        <button type="submit" className="btn btn-primary w-100">Save</button>
+      </form>
+      <div className="mt-3 text-center">
+        <Link to="/">or get back to contacts</Link>
+      </div>
+    </div>
+  );
+};
+
+
+
+
 
 export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.

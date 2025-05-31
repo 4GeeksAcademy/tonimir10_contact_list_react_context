@@ -4,6 +4,14 @@ import PropTypes from "prop-types";  // To define prop types for this component
 import rigoImageUrl from "../assets/img/rigo-baby.jpg"  // Import an image asset
 import useGlobalReducer from "../hooks/useGlobalReducer";  // Import a custom hook for accessing the global state
 
+export const EditContact = () => {
+  return(
+    <>
+    <h1>HOLA MUNDO</h1>
+    </>
+  )
+}
+
 // Define and export the Single component which displays individual item details.
 export const Single = props => {
   // Access the global state using the custom hook.
