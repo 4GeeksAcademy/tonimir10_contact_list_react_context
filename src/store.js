@@ -42,6 +42,16 @@ export default function storeReducer(store, action = {}) {
     contactList: store.contactList.filter(contact => contact.id !== action.payload)
   };
 
+  case 'update_contact':
+  const updated = action.payload;
+
+  return {
+    ...store,
+    contactList: store.contactList.map(contact =>
+      contact.id === updated.id ? { ...contact, ...updated } : contact
+    )
+  };
+
     default:
       throw Error('Unknown action.');
 

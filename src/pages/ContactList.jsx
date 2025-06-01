@@ -76,7 +76,9 @@ const handleDelete = async (id) => {
               </div>
             </div>
 			<button onClick={() => handleDelete(contact.id)}>🗑️</button>
-			<button>🖋️</button>
+			<Link to={`/update-contact/${contact.id}`} className="btn btn-warning ms-2">
+      🖋️
+      </Link>
             <div>
               
             </div>
