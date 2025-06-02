@@ -1,13 +1,15 @@
 import {useEffect, useState } from "react";
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+
 
 export const ContactList = () => {
 
 	const [contactList, setContactList] = useState([]);
-
+ const {store, dispatch } = useGlobalReducer();   
+console.log(store.ContactList);
 	const getContactList = () => {
 		fetch('https://playground.4geeks.com/contact/agendas/tonimir10/contacts',{
 			 method: "GET",
@@ -21,8 +23,13 @@ export const ContactList = () => {
         return resp.json(); 
     })
     .then(data => {
-        setContactList(data.contacts);
-        console.log(data.contacts); 
+        //setContactList(data.contacts);
+        //console.log(data.contacts); 
+        dispatch({
+          type: 'get-contact',
+          payload : data.contacts
+        })
+
     })
     .catch(error => {
        
@@ -35,7 +42,7 @@ export const ContactList = () => {
 },
  [])
 
- const { dispatch } = useGlobalReducer(); // ya está disponible por tu hook
+ 
 
 const handleDelete = async (id) => {
   try {
@@ -45,7 +52,7 @@ const handleDelete = async (id) => {
 
     if (!resp.ok) throw new Error("Error deleting contact from API");
 
-    setContactList(prev => prev.filter(contact => contact.id !== id));
+    //setContactList(prev => prev.filter(contact => contact.id !== id));
 
     dispatch({
       type: "delete_contact",
@@ -64,7 +71,7 @@ const handleDelete = async (id) => {
         Add new contact
       </Link>
       <ul className="list-group">
-        {contactList.map((contact, index) => (
+        {store.contactList.map((contact, index) => (
           <li key={index} className="list-group-item d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
               <img src='https://cdn-pro.elsalvador.com/wp-content/uploads/2020/11/RONALDO-NAZARIO-INTER-SPARTAK-EDH-DEPORTES-03.jpg' className="rounded-circle me-3" width="80" height="80" alt="Profile" />
@@ -75,17 +82,17 @@ const handleDelete = async (id) => {
                 <p className="mb-0">📧 {contact.email}</p>
               </div>
             </div>
-			<button onClick={() => handleDelete(contact.id)}>🗑️</button>
-			<Link to={`/update-contact/${contact.id}`} className="btn btn-warning ms-2">
+			
+            <div className="d-flex gap-2">
+              <button className="papbtn" onClick={() => handleDelete(contact.id)}>🗑️</button>
+			<Link to={`/update-contact/${contact.id}`} className="btn">
       🖋️
       </Link>
-            <div>
-              
             </div>
           </li>
         ))}
         <li className="list-group-item text-end fw-bold">
-          Total de contactos: {contactList.length}
+          Total de contactos: {store.contactList.length}
         </li>
       </ul>
     </div>

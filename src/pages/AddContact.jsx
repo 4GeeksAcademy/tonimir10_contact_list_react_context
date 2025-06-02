@@ -12,7 +12,7 @@ export const AddContactForm = () => {
   });
 
   const navigate = useNavigate();
-  const { dispatch } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +37,6 @@ export const AddContactForm = () => {
 
       const newContact = await resp.json();
 
-      // Guardar en el estado global
       dispatch({
         type: "add_contact",
         payload: newContact,
@@ -52,7 +51,7 @@ export const AddContactForm = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Add a new contact</h2>
-      <form onSubmit={handleSubmit}>
+     
         <div className="form-group mb-3">
           <label>Full Name</label>
           <input type="text" name="full_name" className="form-control" onChange={handleChange} required />
@@ -69,8 +68,8 @@ export const AddContactForm = () => {
           <label>Address</label>
           <input type="text" name="address" className="form-control" onChange={handleChange} required />
         </div>
-        <button type="submit" className="btn btn-primary w-100">Save</button>
-      </form>
+        <button onClick={handleSubmit}className="btn btn-primary w-100">Save</button>
+      
       <div className="mt-3 text-center">
         <Link to="/">or get back to contacts</Link>
       </div>
